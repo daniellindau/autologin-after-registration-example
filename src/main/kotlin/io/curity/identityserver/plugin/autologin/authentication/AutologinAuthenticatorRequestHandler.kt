@@ -33,7 +33,6 @@ import java.util.Optional
 
 
 class AutologinAuthenticatorRequestHandler(config: AutologinConfig)
-
     : AuthenticatorRequestHandler<AutologinRequestModel>
 {
     private val autoLoginManager = config.autoLoginManager
