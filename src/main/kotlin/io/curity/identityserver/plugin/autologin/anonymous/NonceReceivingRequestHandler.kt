@@ -1,6 +1,5 @@
 package io.curity.identityserver.plugin.autologin.anonymous
 
-import io.curity.identityserver.plugin.autologin.descriptor.AutologinConfig
 import org.hibernate.validator.constraints.NotEmpty
 import se.curity.identityserver.sdk.authentication.AnonymousRequestHandler
 import se.curity.identityserver.sdk.service.AutoLoginManager

@@ -16,7 +16,6 @@
 
 package io.curity.identityserver.plugin.autologin.authentication
 
-import org.hibernate.validator.constraints.NotEmpty
 import se.curity.identityserver.sdk.attribute.Attribute
 import se.curity.identityserver.sdk.attribute.Attributes
 import se.curity.identityserver.sdk.attribute.AuthenticationAttributes
@@ -35,22 +34,15 @@ import java.util.Optional
 
 class AutologinAuthenticatorRequestHandler(private val autoLoginManager: AutoLoginManager,
                                            private val exceptionFactory: ExceptionFactory)
-    : AuthenticatorRequestHandler<AutologinRequestModel>
+    : AuthenticatorRequestHandler<Any>
 {
 
-    override fun preProcess(request: Request, response: Response): AutologinRequestModel? = if (request.isGetRequest)
-    {
-        AutologinRequestModel(request)
-    }
-    else
-    {
-        null
-    }
+    override fun preProcess(request: Request, response: Response): Any = Object()
 
-    override fun post(requestModel: AutologinRequestModel?, response: Response): Optional<AuthenticationResult> =
-            throw exceptionFactory.methodNotAllowed("Only authentication using registration nonce available")
+    override fun post(requestModel: Any, response: Response): Optional<AuthenticationResult> =
+            throw exceptionFactory.methodNotAllowed("Only GET available")
 
-    override fun get(requestModel: AutologinRequestModel, response: Response): Optional<AuthenticationResult>
+    override fun get(requestModel: Any, response: Response): Optional<AuthenticationResult>
     {
         val previousResult = autoLoginManager.autoLoginFromCurrentSession.orElseThrow {
             exceptionFactory.badRequestException(ErrorCode.ACCESS_DENIED, "No valid nonce in the sesssion")
@@ -61,10 +53,3 @@ class AutologinAuthenticatorRequestHandler(private val autoLoginManager: AutoLog
                                 ContextAttributes.of(Attributes.of(Attribute.of("iat", Date().time))))))
     }
 }
-
-class AutologinRequestModel(request: Request)
-{
-    @NotEmpty
-    val sessionKey: String? = request.getParameterValueOrError("login-nonce")
-}
-
