@@ -1,11 +1,13 @@
 package io.curity.identityserver.plugin.autologin.registration
 
-import io.curity.identityserver.plugin.autologin.descriptor.AutologinConfig
 import org.hibernate.validator.constraints.NotEmpty
 import se.curity.identityserver.sdk.attribute.AccountAttributes
 import se.curity.identityserver.sdk.authentication.RegistrationRequestHandler
 import se.curity.identityserver.sdk.authentication.RegistrationResult
 import se.curity.identityserver.sdk.errors.ErrorCode
+import se.curity.identityserver.sdk.service.AutoLoginManager
+import se.curity.identityserver.sdk.service.ExceptionFactory
+import se.curity.identityserver.sdk.service.authentication.AuthenticatorInformationProvider
 import se.curity.identityserver.sdk.web.Request
 import se.curity.identityserver.sdk.web.Response
 import se.curity.identityserver.sdk.web.Response.ResponseModelScope.NOT_FAILURE
@@ -13,12 +15,11 @@ import se.curity.identityserver.sdk.web.ResponseModel.templateResponseModel
 import java.util.Optional
 import java.util.UUID
 
-class AutologinRegistrationRequestHandler(config: AutologinConfig)
+class AutologinRegistrationRequestHandler(private val autoLoginManager: AutoLoginManager,
+                                          private val exceptionFactory: ExceptionFactory,
+                                          private val pathHelper: AuthenticatorInformationProvider)
     : RegistrationRequestHandler<RegistrationRequestModel>
 {
-    private val autoLoginManager = config.autoLoginManager
-    private val exceptionFactory = config.exceptionFactory
-    private val pathHelper = config.pathHelper
 
     override fun preProcess(request: Request, response: Response): RegistrationRequestModel =
             if (request.isGetRequest)

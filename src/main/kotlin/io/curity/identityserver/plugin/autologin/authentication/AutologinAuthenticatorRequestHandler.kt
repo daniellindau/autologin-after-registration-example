@@ -16,7 +16,6 @@
 
 package io.curity.identityserver.plugin.autologin.authentication
 
-import io.curity.identityserver.plugin.autologin.descriptor.AutologinConfig
 import org.hibernate.validator.constraints.NotEmpty
 import se.curity.identityserver.sdk.attribute.Attribute
 import se.curity.identityserver.sdk.attribute.Attributes
@@ -26,17 +25,18 @@ import se.curity.identityserver.sdk.attribute.SubjectAttributes
 import se.curity.identityserver.sdk.authentication.AuthenticationResult
 import se.curity.identityserver.sdk.authentication.AuthenticatorRequestHandler
 import se.curity.identityserver.sdk.errors.ErrorCode
+import se.curity.identityserver.sdk.service.AutoLoginManager
+import se.curity.identityserver.sdk.service.ExceptionFactory
 import se.curity.identityserver.sdk.web.Request
 import se.curity.identityserver.sdk.web.Response
 import java.util.Date
 import java.util.Optional
 
 
-class AutologinAuthenticatorRequestHandler(config: AutologinConfig)
+class AutologinAuthenticatorRequestHandler(private val autoLoginManager: AutoLoginManager,
+                                           private val exceptionFactory: ExceptionFactory)
     : AuthenticatorRequestHandler<AutologinRequestModel>
 {
-    private val autoLoginManager = config.autoLoginManager
-    private val exceptionFactory = config.exceptionFactory
 
     override fun preProcess(request: Request, response: Response): AutologinRequestModel? = if (request.isGetRequest)
     {

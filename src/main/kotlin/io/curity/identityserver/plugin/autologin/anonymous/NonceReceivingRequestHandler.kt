@@ -9,13 +9,11 @@ import se.curity.identityserver.sdk.service.authentication.AuthenticatorInformat
 import se.curity.identityserver.sdk.web.Request
 import se.curity.identityserver.sdk.web.Response
 
-class NonceReceivingRequestHandler(config: AutologinConfig) :
+class NonceReceivingRequestHandler(private val autoLoginManager: AutoLoginManager,
+                                   private val exceptionFactory: ExceptionFactory,
+                                   private val pathHelper: AuthenticatorInformationProvider) :
         AnonymousRequestHandler<NonceRequestModel>
 {
-    private val autoLoginManager: AutoLoginManager = config.autoLoginManager
-    private val pathHelper: AuthenticatorInformationProvider = config.pathHelper
-    private val exceptionFactory: ExceptionFactory = config.exceptionFactory
-
     override fun preProcess(request: Request, p1: Response): NonceRequestModel = NonceRequestModel(request)
 
     override fun get(model: NonceRequestModel, p1: Response): Void
